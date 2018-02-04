@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Etch-A-Sketch</title>
+  <link href="main.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Aladin" rel="stylesheet">
+</head>
+<body>
+
+
+  <div id="frame">
+    <div id="logo">
+      <span id="etchASketch">Etch A Sketch</span>
+    </div>
+    <div id="screen">
+      <div id="grid"></div>
+    </div>
+    <div id="knobs">
+      <div class="knob" id="leftKnob"><button id="sizeButton">size</button></div>
+      <button id="rainbowButton">rainbow mode</button>
+      <div class="knob" id="rightKnob"><button id="clearButton">clear</button></div>
+    </div>
+  </div>
+
+
+  <script>
+
+    let gridSize = 50;
+    let rainbowModeOn = false;
+    document.getElementById("grid").style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+    Array.from(document.getElementsByClassName("grid-item")).forEach(function(item) {
+      item.remove();
+    });
+    for (var i = 0; i < (gridSize * gridSize); i++) {
+      let div = document.createElement("div");
+      div.classList.add("grid-item");
+      document.getElementById("grid").appendChild(div);
+    }
+
+    function pickAColor() {
+      let color = "#";
+      let hexValues = "0123456789abcdef";
+      for (var i = 0; i < 6; i++) {
+        color += hexValues[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    document.addEventListener("click", function(e) {
+      if (e.target.id === "sizeButton") {
+        gridSize = parseInt(prompt("How many rows and columns should your Etch A Sketch have?"));
+        if (!gridSize) gridSize = 50;
+        document.getElementById("grid").style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+        Array.from(document.getElementsByClassName("grid-item")).forEach(function(item) {
+          item.remove();
+        });
+        for (var i = 0; i < (gridSize * gridSize); i++) {
+          let div = document.createElement("div");
+          div.classList.add("grid-item");
+          document.getElementById("grid").appendChild(div);
+        }
+      }
+
+      if (e.target.id === "clearButton") {
+        Array.from(document.getElementsByClassName("grid-item")).forEach(function(item) {
+          item.style.backgroundColor = "";
+        });
+      }
+
+      if (e.target.id === "rainbowButton") {
+        if (rainbowModeOn) {
+          rainbowModeOn = false;
+          e.target.style.background = "white";
+          e.target.style.color = "#555";
+        } else {
+          rainbowModeOn = true;
+          e.target.style.background = "linear-gradient(to right, red, orange, yellow, lime, cyan, blue, purple)";
+          e.target.style.color = "white";
+        }
+      }
+
+    });
+
+    document.addEventListener("mouseover", function(e) {
+      if (e.target.classList[0] === "grid-item" && !rainbowModeOn) {
+        e.target.style.backgroundColor = "#111";
+      } else if (e.target.classList[0] === "grid-item" && rainbowModeOn) {
+        e.target.style.backgroundColor = pickAColor();
+      }
+    });
+
+  </script>
+
+
+</body>
+</html>
